@@ -17,11 +17,17 @@ This is a fork of the original MixEval repository. The original repository can b
 * Improved markdown outputs and timing for the training
 * Fixed pip install for remote or CI Integration. 
 
+### News
+
+[2024-09-23] Added `2024-08-11` version and support for additional system prompts when using API based models
+[2024-06-29] Supports `2024-06-01` version and local api to evaluate models with vLLM or TGI
+
+
 ## Getting started 
 
 ```bash
 pip install vllm
-pip install -e .
+pip install git+https://github.com/philschmid/MixEval --upgrade
 ```
 
 _Note: If you want to evaluate models that are not included Take a look [here](https://github.com/philschmid/MixEval?tab=readme-ov-file#registering-new-models). Zephyr example [here](https://github.com/philschmid/MixEval/blob/main/mix_eval/models/zephyr_7b_beta.py)._
@@ -41,39 +47,79 @@ MODEL_PARSER_API=$(echo $OPENAI_API_KEY) API_URL=http://localhost:8000/v1 python
     --model_name local_api \
     --model_path HuggingFaceH4/zephyr-7b-beta \
     --benchmark mixeval_hard \
-    --version 2024-06-01 \
+    --version 2024-08-11 \
     --batch_size 20 \
     --output_dir results \
     --api_parallel_num 20
 ```
 
-3. Results
+Results: `2024-08-11` version
 
 ```bash
-| Metric                      | Score   |
-| --------------------------- | ------- |
-| MBPP                        | 100.00% |
-| OpenBookQA                  | 62.50%  |
-| DROP                        | 47.60%  |
-| BBH                         | 43.10%  |
-| MATH                        | 38.10%  |
-| PIQA                        | 37.50%  |
-| TriviaQA                    | 37.30%  |
-| BoolQ                       | 35.10%  |
-| CommonsenseQA               | 34.00%  |
-| GSM8k                       | 33.60%  |
-| MMLU                        | 29.00%  |
-| HellaSwag                   | 27.90%  |
-| AGIEval                     | 26.80%  |
-| GPQA                        | 0.00%   |
-| ARC                         | 0.00%   |
-| SIQA                        | 0.00%   |
-| overall score (final score) | 34.85%  |
+| Metric        | Score  |
+| ------------- | ------ |
+| PIQA          | 75.00% |
+| ARC           | 66.70% |
+| DROP          | 62.10% |
+| BBH           | 59.50% |
+| GSM8k         | 58.60% |
+| BoolQ         | 53.10% |
+| WinoGrande    | 50.00% |
+| MATH          | 49.20% |
+| CommonsenseQA | 47.10% |
+| TriviaQA      | 44.00% |
+| AGIEval       | 41.39% |
+| HellaSwag     | 36.10% |
+| GPQA          | 33.30% |
+| MMLU          | 32.20% |
+| SIQA          | 30.80% |
+| OpenBookQA    | 25.00% |
+| MMLU-Pro      | 20.00% |
+| overall       | 42.55% |
 
-Total time: 398.0534451007843
-``````
+Total time: 419.3241469860077
+```
 
-Takes around 5 minutes to evaluate.
+Results: `2024-06-01` version
+
+```bash
+| Metric        | Score  |
+| ------------- | ------ |
+| BBH           | 87.50% |
+| PIQA          | 62.50% |
+| GSM8k         | 51.40% |
+| OpenBookQA    | 50.00% |
+| DROP          | 49.30% |
+| BoolQ         | 48.60% |
+| MATH          | 41.90% |
+| CommonsenseQA | 40.00% |
+| TriviaQA      | 39.40% |
+| AGIEval       | 30.27% |
+| HellaSwag     | 27.90% |
+| MMLU          | 22.90% |
+| GPQA          | 12.50% |
+| SIQA          | 5.00%  |
+| ARC           | 0.00%  |
+| MBPP          | 0.00%  |
+| overall       | 36.40% |
+
+Total time: 440.4624948501587
+```
+
+**Use vLLM/TGI with new system message method:**
+
+```bash
+MODEL_PARSER_API=$(echo $OPENAI_API_KEY) API_URL=http://localhost:8000/v1 python -m mix_eval.evaluate \
+    --data_path hf://zeitgeist-ai/mixeval \
+    --model_name local_api \
+    --model_path HuggingFaceH4/zephyr-7b-beta \
+    --benchmark mixeval_hard \
+    --version 2024-06-01 \
+    --model_systemprompt "You are a helpful assistant to solve math challenges." \
+    --batch_size 20 \
+    --output_dir results \
+    --api_parallel_num 20
+```
 
 **Local Hugging Face model from path:**
 
