@@ -20,6 +20,7 @@ This is a fork of the original MixEval repository. The original repository can b
 ### News
 
 [2024-09-23] Added `2024-08-11` version and support for additional system prompts when using API based models
+
 [2024-06-29] Supports `2024-06-01` version and local api to evaluate models with vLLM or TGI
 
 
